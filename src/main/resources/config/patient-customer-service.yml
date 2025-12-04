@@ -2,7 +2,6 @@
 # This configuration is loaded from Config Server
 # Environment-specific values use ${VAR:default} syntax
 
-
 server:
   port: ${CUSTOMER_SERVICE_PORT:8070}
 

@@ -86,6 +86,48 @@ spring:
                   factor: 2
                   basedOnPreviousValue: false
         
+        # Branch Service Routes
+        - id: branch-service
+          uri: lb://BRANCH-SERVICE
+          predicates:
+            - Path=/lifepill/v1/branch/**,/lifepill/v1/employer/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: branchServiceCircuitBreaker
+                fallbackUri: forward:/fallback/branch
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY,SERVICE_UNAVAILABLE
+                methods: GET
+                backoff:
+                  firstBackoff: 100ms
+                  maxBackoff: 500ms
+                  factor: 2
+                  basedOnPreviousValue: false
+        
+        # Inventory Service Routes
+        - id: inventory-service
+          uri: lb://INVENTORY-SERVICE
+          predicates:
+            - Path=/lifepill/v1/item/**,/lifepill/v1/category/**,/lifepill/v1/supplier/**,/lifepill/v1/supplier-company/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: inventoryServiceCircuitBreaker
+                fallbackUri: forward:/fallback/inventory
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY,SERVICE_UNAVAILABLE
+                methods: GET
+                backoff:
+                  firstBackoff: 100ms
+                  maxBackoff: 500ms
+                  factor: 2
+                  basedOnPreviousValue: false
+        
         # Swagger Documentation Routes
         - id: user-auth-swagger
           uri: lb://MOBILE-USER-AUTH-SERVICE
@@ -101,6 +143,22 @@ spring:
             - Path=/customer-service/v3/api-docs/**,/customer-service/swagger-ui/**
           filters:
             - RewritePath=/customer-service/(?<path>.*), /${path}
+        
+        # Branch Service Swagger Routes
+        - id: branch-service-swagger
+          uri: lb://BRANCH-SERVICE
+          predicates:
+            - Path=/branch-service/v3/api-docs/**,/branch-service/swagger-ui/**
+          filters:
+            - RewritePath=/branch-service/(?<path>.*), /${path}
+        
+        # Inventory Service Swagger Routes
+        - id: inventory-service-swagger
+          uri: lb://INVENTORY-SERVICE
+          predicates:
+            - Path=/inventory-service/v3/api-docs/**,/inventory-service/swagger-ui/**
+          filters:
+            - RewritePath=/inventory-service/(?<path>.*), /${path}
 
 # Resilience4j Circuit Breaker Configuration
 resilience4j:
@@ -117,6 +175,10 @@ resilience4j:
         base-config: default
       customerServiceCircuitBreaker:
         base-config: default
+      branchServiceCircuitBreaker:
+        base-config: default
+      inventoryServiceCircuitBreaker:
+        base-config: default
       defaultCircuitBreaker:
         base-config: default
   
@@ -128,4 +190,8 @@ resilience4j:
       userAuthCircuitBreaker:
         base-config: default
       customerServiceCircuitBreaker:
+        base-config: default
+      branchServiceCircuitBreaker:
+        base-config: default
+      inventoryServiceCircuitBreaker:
         base-config: default

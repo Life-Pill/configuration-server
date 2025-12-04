@@ -1,9 +1,6 @@
-# ============================================
 # Mobile User Auth Service Configuration
-# ============================================
 # This configuration is loaded from Config Server
 # Environment-specific values use ${VAR:default} syntax
-# ============================================
 
 server:
   port: ${USER_AUTH_PORT:8080}

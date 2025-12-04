@@ -1,9 +1,6 @@
-# ============================================
 # Shared Configuration for All Services
-# ============================================
 # These properties are shared across all microservices
 # Service-specific configurations override these defaults
-# ============================================
 
 # Common Eureka Configuration
 eureka:

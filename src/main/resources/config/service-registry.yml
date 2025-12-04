@@ -1,6 +1,4 @@
-# ============================================
 # Service Registry (Eureka Server) Configuration
-# ============================================
 
 server:
   port: ${EUREKA_PORT:8761}
